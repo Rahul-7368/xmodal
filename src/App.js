@@ -36,7 +36,7 @@ const App = () => {
     const today = new Date();
     const birthDate = new Date(dob);
     if (birthDate > today) {
-      alert('Invalid date of birth. Please enter a valid date of birth.');
+      alert('Invalid date of birth. Date of birth cannot be in the future.');
       return;
     }
 
@@ -76,6 +76,16 @@ const App = () => {
               </label>
               <br />
               <label>
+                Phone Number:
+                <input
+                  type="text"
+                  id="phone"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  />
+              </label>
+              <br/>
+              <label>
                 Date of Birth:
                 <input
                   type="date"
@@ -86,16 +96,6 @@ const App = () => {
 
               </label>
               <br />
-              <label>
-                Phone:
-                <input
-                  type="text"
-                  id="phone"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  />
-              </label>
-              <br/>
               <button type="submit" className="submit-button">
                 Submit
               </button>
@@ -110,4 +110,7 @@ const App = () => {
 
 
 export default App;
+
+
+
 
