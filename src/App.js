@@ -1,116 +1,135 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from 'react';
 import './App.css';
 
-const App = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [dob, setDob] = useState('');
-  const [phone, setPhone] = useState('');
+function App() {
+  const [showModal, setShowModal] = useState(false);
+  const [formData, setFormData] = useState({
+    username: '',
+    email: '',
+    phone: '',
+    dob: '',
+  });
 
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
-  };
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      const openButton = document.getElementById('open-button');
+      if (showModal && event.target.closest('.modal') === null && event.target !== openButton) {
+        setShowModal(false);
+      }
+    };
 
-  const handleCloseModal = (e) => {
-    if(e.target.className === 'modal') {
-      setIsModalOpen(false);
-    }
+    document.addEventListener('click', handleClickOutside);
 
-  };
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [showModal]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!username) {
-      alert('Username is required');
-      return;
-    }
+
+    const { username, email, phone, dob } = formData;
+
     if (!email.includes('@')) {
       alert('Invalid email. Please check your email address.');
       return;
     }
+
     if (!/^\d{10}$/.test(phone)) {
       alert('Invalid phone number. Please enter a 10-digit phone number.');
       return;
     }
+
     const today = new Date();
-    const birthDate = new Date(dob);
-    if (birthDate >= today) {
-      alert('Invalid date of birth. Date of birth cannot be in the future.');
+    const dobDate = new Date(dob);
+
+    if (dobDate >= today) {
+      alert('Invalid date of birth. Date must be in the past.');
       return;
     }
 
-    setUsername('');
-    setEmail('');
-    setDob('');
-    setPhone('');
-    setIsModalOpen(false);
+    
+    setFormData({
+      username: '',
+      email: '',
+      phone: '',
+      dob: '',
+    });
+    setShowModal(false);
   };
 
-  return(
-    <div>
+  return (
+    <div className="App">
       <h1>User Details Modal</h1>
-      <button onClick = {handleOpenModal}>Open Form</button>
-      {isModalOpen && (
-        <div className="modal" onClick={handleCloseModal}>
-          <div className="modal-content">
-            <form onSubmit={handleSubmit}>
-              <label>
-                Username:
+      <button id='open-button' className='submit-button' onClick={() => setShowModal(true)}>Open Form</button>
+      <button className="test"></button>
+      {showModal &&
+        <dialog open={showModal} >
+          <div className="modal" >
+            <div className="modal-content" >
+              <h2>Fill Details</h2>
+              <form onSubmit={handleSubmit}>
+                <label htmlFor="username">Username:</label>
                 <input
                   type="text"
                   id="username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  />
-              </label>
-              <br />
-              <label>
-                Email:
+                  name="username"
+                  value={formData.username}
+                  onChange={(e) =>
+                    setFormData({ ...formData, username: e.target.value })
+                  }
+                  required
+                />
+
+                <label htmlFor="email">Email:</label>
                 <input
-                  type="email"
+                  type="text"
                   id="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  />
-              </label>
-              <br />
-              <label>
-                Phone Number:
+                  name="email"
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
+                  pattern=".+@.+"
+                  title={`Please include an '@' in the email address. '${formData.email} is missing an '@'`}
+                  required
+                />
+
+                <label htmlFor="phone">Phone:</label>
                 <input
                   type="text"
                   id="phone"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  />
-              </label>
-              <br/>
-              <label>
-                Date of Birth:
+                  name="phone"
+                  value={formData.phone}
+                  onChange={(e) =>
+                    setFormData({ ...formData, phone: e.target.value })
+                  }
+                  required
+                />
+
+                <label htmlFor="dob">Date of Birth:</label>
                 <input
                   type="date"
                   id="dob"
-                  value={dob}
-                  onChange={(e) => setDob(e.target.value)}
-                  />
-
-              </label>
-              <br />
-              <button type="submit" className="submit-button">
-                Submit
-              </button>
-            </form>
+                  name="dob"
+                  value={formData.dob}
+                  onChange={(e) =>
+                    setFormData({ ...formData, dob: e.target.value })
+                  }
+                  required
+                />
+                <button type='submit' className="submit-button">
+                  Submit
+                </button>
+              </form>
+            </div>
           </div>
-        </div>
-      )}
+        </dialog>
+      }
     </div>
   );
-
-};
-
+}
 
 export default App;
-
-
 
 
