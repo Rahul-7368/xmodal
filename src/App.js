@@ -29,13 +29,13 @@ const App = () => {
       alert('Invalid email. Please check your email address.');
       return;
     }
-    if (phone.length !== 10) {
+    if (!/^\d{10}$/.test(phone)) {
       alert('Invalid phone number. Please enter a 10-digit phone number.');
       return;
     }
     const today = new Date();
     const birthDate = new Date(dob);
-    if (birthDate > today) {
+    if (birthDate >= today) {
       alert('Invalid date of birth. Date of birth cannot be in the future.');
       return;
     }
